@@ -57,6 +57,7 @@ panel contents and color panels check menu.css and colorpanel.css.
 
 .cke_panel_block {
 	outline: none;
+	font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
 }
 
 /* This class represents panels which are used as context menus. */
@@ -69,7 +70,7 @@ panel contents and color panels check menu.css and colorpanel.css.
 /* This class represents panels which are used by rich combos. */
 .cke_combopanel
 {
-    width: 150px;
+    width: 140px;
     height: 170px;
 }
 
@@ -143,8 +144,8 @@ is its visual representation:
 {
 	padding: 3px 4px;
 	display: block;
-	border: 1px solid #fff;
-	color: inherit !important;
+	/* border: 1px solid #fff; */
+	color: #fff;
 	text-decoration: none;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -158,30 +159,34 @@ is its visual representation:
 	width : 100%;
 
 	/* IE is not able to inherit the color, so we must force it to black */
-	color: #000;
+	color: #fff
 }
 
 /* IE7 */
 *:first-child+html .cke_panel_listItem a
 {
 	/* IE is not able to inherit the color, so we must force it to black */
-	color: #000;
+	color: #fff
 }
 
 .cke_panel_listItem.cke_selected a
 {
-	border: 1px solid #dedede;
-	background-color: #f2f2f2;
+	/* border: 1px solid #dedede; */
+	background-color: #555;
 
-    box-shadow: 0 0 2px rgba(0,0,0,.1) inset;
+    /* box-shadow: 0 0 2px rgba(0,0,0,.1) inset; */
+}
+
+.cke_panel_listItem.cke_selected a {
+	background-color: #777;
 }
 
 .cke_panel_listItem a:hover,
 .cke_panel_listItem a:focus,
 .cke_panel_listItem a:active
 {
-	border-color: #dedede;
-	background-color: #f2f2f2;
+	/* border-color: #dedede; */
+	background-color: #777;
 
     box-shadow: 0 0 2px rgba(0,0,0,.1) inset;
 }
@@ -195,7 +200,7 @@ is its visual representation:
 .cke_hc .cke_panel_listItem a:focus,
 .cke_hc .cke_panel_listItem a:active
 {
-	border: 2px solid;
+	/* border: 2px solid; */
 	padding: 1px 2px;
 }
 
@@ -236,3 +241,34 @@ is its visual representation:
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
+
+.cke_panel_listItem a[title="content-h1"]
+{
+	font-size: 140%;
+}
+
+.cke_panel_listItem a[title="content-h2"]
+{
+	font-size: 130%;
+}
+
+.cke_panel_listItem a[title="content-h3"]
+{
+	font-size: 120%;
+}
+
+.cke_panel_listItem a[title="content-h4"]
+{
+	font-size: 110%;
+}
+
+.cke_panel_listItem a[title="content-h5"], .cke_panel_listItem a[title="content-p"]
+{
+	font-size: 100%;
+}
+
+.cke_panel_listItem a[title="content-div"]
+{
+	font-size: 83%;
+}
+

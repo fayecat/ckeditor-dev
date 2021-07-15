@@ -81,3 +81,54 @@ legend.cke_voice_label
 a.cke_menubutton__fontsizeSmaller {
   border-top: 1px solid #777;
 }
+
+
+.cke_combo__format {
+	height: 26px;
+	cursor: pointer;
+}
+
+.cke_combo__format a.cke_combo_button {
+	margin: 0 0;
+	background: transparent;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.cke_combo__format.cke_combo_on a.cke_combo_button:hover {
+	box-shadow: none;
+}
+
+.cke_combo__format.cke_combo_on {
+	background: #555;
+}
+
+.cke_combo__format a.cke_combo_button:hover,  .cke_combo__format a.cke_combo_button:focus {
+	background: #777;
+	box-shadow: none;
+}
+
+.cke_combo__format.cke_combo_off {
+	background: transparent;
+}
+
+.cke_combo__format .cke_combo_inlinelabel, .cke_combo__format .cke_combo_text {
+    margin-top: 4px;
+	width: 5px;
+	height: 16px;
+	display: inline-block;
+	text-shadow: none;
+	text-indent: -9999px;
+    background: url("icons_hidpi.png") no-repeat 0 -576px!important;
+    background-size: 16px!important;
+	cursor: pointer;
+}
+
+.cke_combo__format .cke_combo_button .cke_combo_open {
+	margin: 1px 7px 2px 1px;
+}
+
+.cke_combo__format .cke_combo_button .cke_combo_arrow {
+    border-top: 3px solid #eee;
+}
