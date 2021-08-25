@@ -156,7 +156,7 @@ CKEDITOR.config.format_tags = 'h1;h2;h3;h4;h5;p;div';
  *
  */
 
-CKEDITOR.config.format_p = { element: 'p', attributes: { style: 'font-size: 100%' } };
+CKEDITOR.config.format_p = { element: 'p', attributes: { 'class': 'normalPara' } };
 
 /**
  * The style definition to be used to apply the `Normal (DIV)` format.
@@ -166,7 +166,7 @@ CKEDITOR.config.format_p = { element: 'p', attributes: { style: 'font-size: 100%
  * @cfg {Object} [format_div={ element: 'div' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_div = { element: 'div', attributes: { style: 'font-size: 83%' } };
+CKEDITOR.config.format_div = { element: 'div', attributes: { 'class': 'normalDiv' } };
 
 /**
  * The style definition to be used to apply the `Formatted` format.
@@ -196,7 +196,7 @@ CKEDITOR.config.format_address = { element: 'address' };
  * @cfg {Object} [format_h1={ element: 'h1' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h1 = { element: 'h1', attributes: { style: 'font-size: 48px' } };
+CKEDITOR.config.format_h1 = { element: 'h1', attributes: { 'class': 'h1Tag' } };
 
 /**
  * The style definition to be used to apply the `Heading 2` format.
@@ -206,7 +206,7 @@ CKEDITOR.config.format_h1 = { element: 'h1', attributes: { style: 'font-size: 48
  * @cfg {Object} [format_h2={ element: 'h2' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h2 = { element: 'h2', attributes: { style: 'font-size: 28px' } };
+CKEDITOR.config.format_h2 = { element: 'h2', attributes: { 'class': 'h2Tag' } };
 
 /**
  * The style definition to be used to apply the `Heading 3` format.
@@ -216,7 +216,7 @@ CKEDITOR.config.format_h2 = { element: 'h2', attributes: { style: 'font-size: 28
  * @cfg {Object} [format_h3={ element: 'h3' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h3 = { element: 'h3', attributes: { style: 'font-size: 24px' } };
+CKEDITOR.config.format_h3 = { element: 'h3', attributes: { 'class': 'h3Tag' } };
 
 /**
  * The style definition to be used to apply the `Heading 4` format.
@@ -226,7 +226,7 @@ CKEDITOR.config.format_h3 = { element: 'h3', attributes: { style: 'font-size: 24
  * @cfg {Object} [format_h4={ element: 'h4' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h4 = { element: 'h4', attributes: { style: 'font-size: 20px' } };
+CKEDITOR.config.format_h4 = { element: 'h4', attributes: { 'class': 'h4Tag' } };
 
 /**
  * The style definition to be used to apply the `Heading 5` format.
@@ -236,7 +236,7 @@ CKEDITOR.config.format_h4 = { element: 'h4', attributes: { style: 'font-size: 20
  * @cfg {Object} [format_h5={ element: 'h5' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h5 = { element: 'h5', attributes: { style: 'font-size: 100%' } };
+CKEDITOR.config.format_h5 = { element: 'h5', attributes: { 'class': 'h5Tag' } };
 
 /**
  * The style definition to be used to apply the `Heading 6` format.

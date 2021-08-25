@@ -211,7 +211,7 @@ CKEDITOR.plugins.add( 'colorbutton', {
 						if ( color ) {
 							colorStyle.childRule = function( element ) {
 								// Fore color style must be applied inside links instead of around it. (#4772,#6908)
-								return !( element.is( 'a' ) || element.getElementsByTag( 'a' ).count() ) || isUnstylable( element );
+								return !( element.is( 'a' ) || element.getElementsByTag( 'a' ).count() ) && !(element.is("font") || element.getElementsByTag("font").count()) || isUnstylable( element );
 							};
 							editor.applyStyle( new CKEDITOR.style(Object.assign({}, colorStyle, { styles: { color: colorName } })) );
 						}
