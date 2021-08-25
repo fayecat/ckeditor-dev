@@ -73,7 +73,12 @@ CKEDITOR.plugins.add( 'colorbutton', {
 				var iconStyles = config.colorButton_iconStyles(computedColor)
 				span.setStyles(iconStyles)
 				span.setAttribute('title', (editor.lang.colorbutton.textColorTitle || ''))
-			})	
+				if (editor.config.customColorPlate) {
+					editor.config.customColorPlate.init(btn._.id, chooseColor, computedColor)
+					return
+				}
+
+			})
 			editor.ui.add( name, CKEDITOR.UI_PANELBUTTON, {
 				modes: { wysiwyg: 1 },
 				editorFocus: 0,
@@ -96,6 +101,12 @@ CKEDITOR.plugins.add( 'colorbutton', {
 					// The block should not have scrollbars (#5933, #6056)
 					block.element.getDocument().getBody().setStyle( 'overflow', 'hidden' );
 
+					if (editor.config.customColorPlate) {
+						panel.element.setStyle('overflow', 'inherit');
+						panel.element.appendHtml('<div id="' + this._.id + '_color_plate"  style="position: absolute; top: 0; background: rgb(51, 51, 51); border-radius: 4px; padding: 2px;"/>');
+						editor.config.customColorPlate.init(this._.id, chooseColor, '#fff')
+					}
+
 					CKEDITOR.ui.fire( 'ready', this );
 
 					var keys = block.keys;
@@ -111,6 +122,10 @@ CKEDITOR.plugins.add( 'colorbutton', {
 
 				onOpen: function() {
 					var doc = this._.panel._.iframe.getFrameDocument()
+
+					if (editor.config.customColorPlate) {
+						return
+					}
 
 					if (editor.config.advancedEditor) {
 						// on advanced-text-editor
@@ -155,6 +170,58 @@ CKEDITOR.plugins.add( 'colorbutton', {
 					}
 				}
 			} );
+		}
+
+		function chooseColor(colorName) {
+			var clickFn = CKEDITOR.tools.addFunction( function( color ) {
+				if (config.colorButton_clickCustomColorCallback) {
+					config.colorButton_clickCustomColorCallback(color)
+				}
+
+				var selection = editor.getSelection();
+				if (!selection) {
+					return;
+				}
+				editor.focus();
+				editor.fire( 'saveSnapshot' );
+
+				if (editor.config.advancedEditor) {
+					var range = editor.createRange();
+					var selection = editor.getSelection()
+
+					var colorStyle = config[ 'colorButton_foreStyle' ];
+					if (color === 'default' || !color) {
+						// select all contents
+						editor.document.$.execCommand( 'SelectAll', false, null );
+
+						classNames.map(function(className) {
+							editor.removeStyle( new CKEDITOR.style( colorStyle, {className: className}))
+						});
+
+						editor.removeStyle( new CKEDITOR.style( colorStyle, {className: '#(className)'} ))
+						editor.applyStyle( new CKEDITOR.style(Object.assign({}, colorStyle, { styles: { color: 'unset' } })) );
+
+						selection.removeAllRanges()
+					} else {
+
+						classNames.map(function(className) {
+							editor.removeStyle( new CKEDITOR.style( colorStyle, {className: className}))
+						});
+
+						if ( color ) {
+							colorStyle.childRule = function( element ) {
+								// Fore color style must be applied inside links instead of around it. (#4772,#6908)
+								return !( element.is( 'a' ) || element.getElementsByTag( 'a' ).count() ) && !(element.is("font") || element.getElementsByTag("font").count()) || isUnstylable( element );
+							};
+							editor.applyStyle( new CKEDITOR.style(Object.assign({}, colorStyle, { styles: { color: colorName } })) );
+						}
+					}
+				}
+
+				editor.focus();
+				editor.fire( 'saveSnapshot' );
+			} );
+			CKEDITOR.tools.callFunction(clickFn, colorName)
 		}
 
 		function renderColors( panel, type, colorBoxId ) {
@@ -221,7 +288,7 @@ CKEDITOR.plugins.add( 'colorbutton', {
 						if ( color ) {
 							// get classname
 							var colorClassName = config.colorButton_colorClassNamePattern.replace('%s', color);
-							
+
 							colorStyle.childRule = function( element ) {
 								// Fore color style must be applied inside links instead of around it. (#4772,#6908)
 								return !( element.is( 'a' ) || element.getElementsByTag( 'a' ).count() ) || isUnstylable( element );

@@ -55,7 +55,7 @@ var CKBUILDER_CONFIG = {
 		fontfamily: 1,
 		fontsize: 1,
 		// font: 1,
-		// format: 1,
+		format: 1,
 		// forms: 1,
 		// horizontalrule: 1,
 		// htmlwriter: 1,

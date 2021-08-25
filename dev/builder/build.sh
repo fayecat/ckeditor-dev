@@ -10,7 +10,7 @@ echo "CKBuilder - Builds a release version of ckeditor-dev."
 echo ""
 
 CKBUILDER_VERSION="2.1.0"
-CKBUILDER_URL="http://download.cksource.com/CKBuilder/$CKBUILDER_VERSION/ckbuilder.jar"
+CKBUILDER_URL="https://download.cksource.com/CKBuilder/$CKBUILDER_VERSION/ckbuilder.jar"
 
 PROGNAME=$(basename $0)
 MSG_UPDATE_FAILED="Warning: The attempt to update ckbuilder.jar failed. The existing file will be used."
@@ -71,7 +71,7 @@ then
 	VERSION=$TAG
 fi
 
-java -jar ckbuilder/$CKBUILDER_VERSION/ckbuilder.jar --build ../../ ~/strikingly/ckeditor/vendor/assets/javascripts $JAVA_ARGS --version="$VERSION" --revision="$REVISION" --overwrite --no-zip --no-tar --skip-omitted-in-build-config --leave-js-unminified
+java -jar ckbuilder/$CKBUILDER_VERSION/ckbuilder.jar --build ../../ ~/strikingly/ckeditor/vendor/assets/javascripts $JAVA_ARGS --version="$VERSION" --revision="$REVISION" --overwrite --no-zip --no-tar --skip-omitted-in-build-config
 java -jar ckbuilder/$CKBUILDER_VERSION/ckbuilder.jar --build-skin ../../skins/clean ~/strikingly/ckeditor/vendor/assets/javascripts/ckeditor/skins/clean --overwrite
 
 # Copy and build tests
