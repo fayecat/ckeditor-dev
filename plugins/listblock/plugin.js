@@ -12,7 +12,7 @@ CKEDITOR.plugins.add( 'listblock', {
 				'<a id="{id}_option" _cke_focus=1 hidefocus=true' +
 					' title="{title}"' +
 					' href="javascript:void(\'{val}\')" ' +
-					' {onclick}="CKEDITOR.tools.callFunction({clickFn},\'{val}\'); return false;"' + // #188
+					' {onclick}="CKEDITOR.tools.callFunction({clickFn},\'{val}\', \'oBlur\', event); return false;"' + // #188
 						' role="option">' +
 					'{text}' +
 				'</a>' +
@@ -22,7 +22,7 @@ CKEDITOR.plugins.add( 'listblock', {
 			escapeSingleQuotes = function( str ) {
 				return str.replace( reSingleQuote, '\\\'' );
 			};
-
+		var fontSizeSetBar = CKEDITOR.addTemplate('panel-bottom-bar', '<div class="panel-bottom-bar"><div class="input-wrapper" title=""><div class="tooltip"><div class="arrow"></div>{title}</div><input type="text" value="{value}" onfocus="CKEDITOR.tools.callFunction({onfocusEvent}, event)" onblur="CKEDITOR.tools.callFunction({onblurEvent}, event)" maxLength="3" /><div class="unit">px</div></div><div class="control-wrapper" title=""> <div class="save-btn" onclick="CKEDITOR.tools.callFunction({onSaveFont}, event)">{saveText}</div> <div class="reset-btn" onclick="CKEDITOR.tools.callFunction({onResetFont}, event)">{resetText}</div></div></div>' )
 		CKEDITOR.ui.panel.prototype.addListBlock = function( name, definition ) {
 			return this.addBlock( name, new CKEDITOR.ui.listBlock( this.getHolderElement(), definition ) );
 		};
@@ -56,6 +56,7 @@ CKEDITOR.plugins.add( 'listblock', {
 				this._.pendingList = [];
 				this._.items = {};
 				this._.groups = {};
+				this._.barParams = { typeTooltip: '' };
 			},
 
 			_: {
@@ -64,20 +65,21 @@ CKEDITOR.plugins.add( 'listblock', {
 						var output = list.output( { items: this._.pendingList.join( '' ) } );
 						this._.pendingList = [];
 						this._.pendingHtml.push( output );
+						this._.pendingHtml.push( fontSizeSetBar.output( this._.barParams ) );
 						delete this._.started;
 					}
 				},
 
 				getClick: function() {
 					if ( !this._.click ) {
-						this._.click = CKEDITOR.tools.addFunction( function( value ) {
+						this._.click = CKEDITOR.tools.addFunction( function( value, blockBlur, event ) {
 							var marked = this.toggle( value );
 							if ( this.onClick )
-								this.onClick( value, marked );
+								this.onClick( value, marked, blockBlur, event );
 						}, this );
 					}
 					return this._.click;
-				}
+				},
 			},
 
 			proto: {
@@ -101,6 +103,43 @@ CKEDITOR.plugins.add( 'listblock', {
 					};
 
 					this._.pendingList.push( listItem.output( data ) );
+				},
+
+				initPixelSize: function(params) {
+					var inputFocus = CKEDITOR.tools.addFunction( function(event) {
+						if ( params.onfocusEvent )
+							params.onfocusEvent(event);
+					});
+					var inputUnFocus = CKEDITOR.tools.addFunction( function(event) {
+						if ( params.onblurEvent )
+							params.onblurEvent(event);
+					});
+
+					var onResetFont = CKEDITOR.tools.addFunction( function(event) {
+						if ( params.onResetFont )
+							params.onResetFont(event);
+					});
+
+					var onSaveFont = CKEDITOR.tools.addFunction( function(event) {
+						if ( params.onSaveFont )
+							params.onSaveFont(event);
+					});
+
+
+
+					var data = {
+						title: params.title,
+						saveText: params.saveText,
+						resetText: params.resetText,
+						onclick: CKEDITOR.env.ie ? 'onclick="return false;" onmouseup' : 'onclick',
+						clickFn: this._.getClick(),
+						onfocusEvent: inputFocus,
+						onblurEvent: inputUnFocus,
+						onResetFont: onResetFont,
+						onSaveFont: onSaveFont,
+						value: params.value
+					}
+					this._.barParams = data;
 				},
 
 				startGroup: function( title ) {

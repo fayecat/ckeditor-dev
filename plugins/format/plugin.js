@@ -52,22 +52,197 @@ CKEDITOR.plugins.add( 'format', {
 			init: function() {
 				// this.startGroup( editor.lang.format.label );
 
+				var resetEvent = function () { this.unmarkAll.call(this) }
+
+				resetEvent = resetEvent.bind(this)
+
 				for ( var tag in styles ) {
 					var label = editor.lang.format[tag];
 
 					// Add the tag entry to the panel list.
 					this.add( tag, label, 'content-' + tag );
 				}
+
+				var onfocusEvent = function(ev) {
+					var parent = $(ev.target).parents('.panel-bottom-bar')
+
+					parent.find('.save-btn').show()
+					parent.find('.reset-btn').hide()
+				}
+
+
+				var onblurEvent = function(ev) {
+					var parent = $(ev.target).parents('.panel-bottom-bar')
+					setTimeout(function() {
+						parent.find('.save-btn').hide();
+						parent.find('.reset-btn').show();
+					}, 300)
+				}
+
+				var saveFont = function(ev) {
+					var parent = $(ev.target).parents('.panel-bottom-bar')
+					var inputNode = parent.find('input')
+					inputNode.focus();
+					var value = inputNode.val()
+
+					value = Number(value)
+					if (value === 'NaN') {
+
+						value = editor.config.getTextFontSize()
+					} else {
+						if (value > 120) {
+							value = 120
+						} else if (value < 6) {
+							value = 6
+						}
+					}
+					inputNode.val(value)
+					editor.fire( 'saveSnapshot' );
+
+					var currentNode = editor.elementPath().block.$
+
+					var tagName = currentNode.localName
+					// var className = currentNode.className
+					// var fontSize = currentNode.style.fontSize
+					// var textAlign = currentNode.style.textAlign
+
+					var styleString = ''
+
+					var styleObj = { attributes: {} }
+
+					if (tagName) {
+						styleObj.element = tagName
+					}
+
+
+					if (value) {
+						styleString += ('font-size:' + value + 'px;')
+					}
+
+
+					if (styleString) {
+						styleObj.attributes.style = styleString
+					}
+
+
+					var style = new CKEDITOR.style(styleObj)
+					editor.applyStyle(style)
+					setTimeout( function() {
+						editor.fire( 'saveSnapshot' );
+					}, 0 );
+					resetEvent()
+					setTimeout(function() {
+						parent.find('.save-btn').show()
+						parent.find('.reset-btn').hide()
+					}, 300)
+				}
+
+				var resetFont = function() {
+					editor.fire( 'saveSnapshot' );
+
+					var currentNode = editor.elementPath().block.$
+
+					var tagName = currentNode.localName
+					var className = currentNode.className
+					var fontSize = currentNode.style.fontSize
+					var textAlign = currentNode.style.textAlign
+
+					var styleString = ''
+
+					var styleObj = { attributes: {} }
+
+					if (tagName) {
+						styleObj.element = tagName
+					}
+
+
+
+					if (className) {
+						styleObj.attributes['class'] = className
+					}
+
+					if (fontSize) {
+						styleString += ('font-size:' + fontSize + ';')
+					}
+
+
+					if (styleString) {
+						styleObj.attributes.style = styleString
+					}
+
+
+					var style = new CKEDITOR.style(styleObj)
+					editor.removeStyle(style)
+					setTimeout( function() {
+						editor.fire( 'saveSnapshot' );
+					}, 0 );
+					resetEvent()
+				}
+
+				var phrases = editor.config.getFontInputPhase() || {}
+
+				var data = {
+					value: editor.config.getTextFontSize(),
+					title: phrases.inputTooltip,
+					saveText: phrases.save,
+					resetText: phrases.reset,
+					onfocusEvent: onfocusEvent,
+					onblurEvent: onblurEvent,
+					onSaveFont: saveFont,
+					onResetFont: resetFont
+				 }
+
+				this.initPixelSize(data)
+
 			},
 
-			onClick: function( value ) {
-				editor.focus();
+			onClick: function( value, marked, event ) {
 				editor.fire( 'saveSnapshot' );
 
-				var style = styles[ value ],
-					elementPath = editor.elementPath();
 
-				editor[ style.checkActive( elementPath, editor ) ? 'removeStyle' : 'applyStyle' ]( style );
+				var parent = $(event.target).parents('.cke_panel_block')
+				var inputNode = parent.find('.panel-bottom-bar input')
+
+				var currentNode = editor.elementPath().block.$
+				var fontSize = currentNode.style.fontSize
+				var textAlign = currentNode.style.textAlign
+				var styleString = ''
+				var config = CKEDITOR.config['format_' + value]
+				var styleObj = { element: config.element, attributes: config.attributes }
+				var fontValue = config.fontSize || ''
+
+				if (config.fontSize) {
+					if (config.element == 'p' || config.element == 'h5') {
+						fontValue = editor.config.getTextFontSize() + 'px'
+					}
+
+					if (config.element == 'div') {
+						fontValue = parseInt(editor.config.getTextFontSize() * 0.83) + 'px'
+					}
+
+					styleString += ('font-size:' + fontValue + ';')
+				}
+
+
+				if (textAlign) {
+					styleString += ('text-align:' + textAlign + ';')
+				}
+
+				if (styleString) {
+					styleObj.attributes.style = styleString
+				}
+
+				var style = new CKEDITOR.style(styleObj)
+
+				var status = style.checkActive( editor.elementPath(), editor ) ? 'removeStyle' : 'applyStyle'
+
+				editor[status]( style );
+
+				if (status === 'applyStyle') {
+					inputNode.val(fontValue.replace('px', ''))
+				} else {
+					inputNode.val(editor.config.getTextFontSize())
+				}
 
 				// Save the undo snapshot after all changes are affected. (#4899)
 				setTimeout( function() {
@@ -156,7 +331,7 @@ CKEDITOR.config.format_tags = 'h1;h2;h3;h4;h5;p;div';
  *
  */
 
-CKEDITOR.config.format_p = { element: 'p', attributes: { 'class': 'normalPara' } };
+CKEDITOR.config.format_p = { element: 'p', attributes: { 'class': 'normalPara' }, fontSize: '100%'  };
 
 /**
  * The style definition to be used to apply the `Normal (DIV)` format.
@@ -166,7 +341,7 @@ CKEDITOR.config.format_p = { element: 'p', attributes: { 'class': 'normalPara' }
  * @cfg {Object} [format_div={ element: 'div' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_div = { element: 'div', attributes: { 'class': 'normalDiv' } };
+CKEDITOR.config.format_div = { element: 'div', attributes: { 'class': 'normalDiv' }, fontSize: '83%' };
 
 /**
  * The style definition to be used to apply the `Formatted` format.
@@ -196,7 +371,7 @@ CKEDITOR.config.format_address = { element: 'address' };
  * @cfg {Object} [format_h1={ element: 'h1' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h1 = { element: 'h1', attributes: { 'class': 'h1Tag' } };
+CKEDITOR.config.format_h1 = { element: 'h1', attributes: { 'class': 'h1Tag' }, fontSize: '48px' };
 
 /**
  * The style definition to be used to apply the `Heading 2` format.
@@ -206,7 +381,7 @@ CKEDITOR.config.format_h1 = { element: 'h1', attributes: { 'class': 'h1Tag' } };
  * @cfg {Object} [format_h2={ element: 'h2' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h2 = { element: 'h2', attributes: { 'class': 'h2Tag' } };
+CKEDITOR.config.format_h2 = { element: 'h2', attributes: { 'class': 'h2Tag' }, fontSize: '28px' };
 
 /**
  * The style definition to be used to apply the `Heading 3` format.
@@ -216,7 +391,7 @@ CKEDITOR.config.format_h2 = { element: 'h2', attributes: { 'class': 'h2Tag' } };
  * @cfg {Object} [format_h3={ element: 'h3' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h3 = { element: 'h3', attributes: { 'class': 'h3Tag' } };
+CKEDITOR.config.format_h3 = { element: 'h3', attributes: { 'class': 'h3Tag' }, fontSize: '24px' };
 
 /**
  * The style definition to be used to apply the `Heading 4` format.
@@ -226,7 +401,7 @@ CKEDITOR.config.format_h3 = { element: 'h3', attributes: { 'class': 'h3Tag' } };
  * @cfg {Object} [format_h4={ element: 'h4' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h4 = { element: 'h4', attributes: { 'class': 'h4Tag' } };
+CKEDITOR.config.format_h4 = { element: 'h4', attributes: { 'class': 'h4Tag' }, fontSize: '20px' };
 
 /**
  * The style definition to be used to apply the `Heading 5` format.
@@ -236,7 +411,7 @@ CKEDITOR.config.format_h4 = { element: 'h4', attributes: { 'class': 'h4Tag' } };
  * @cfg {Object} [format_h5={ element: 'h5' }]
  * @member CKEDITOR.config
  */
-CKEDITOR.config.format_h5 = { element: 'h5', attributes: { 'class': 'h5Tag' } };
+CKEDITOR.config.format_h5 = { element: 'h5', attributes: { 'class': 'h5Tag' }, fontSize: '100%' };
 
 /**
  * The style definition to be used to apply the `Heading 6` format.

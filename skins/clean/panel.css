@@ -70,8 +70,115 @@ panel contents and color panels check menu.css and colorpanel.css.
 /* This class represents panels which are used by rich combos. */
 .cke_combopanel
 {
-    width: 140px;
-    height: 170px;
+    width: 190px;
+    height: 235px;
+}
+
+.cke_panel_block .panel-bottom-bar {
+	display: flex;
+	border-top: solid 1px #636972;
+	height: 34px;
+    align-items: center;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper {
+	position: relative;
+	width: 60%;
+	height: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper:hover {
+	background: #3A3C3F;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper:hover .tooltip {
+	display: block;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper input {
+	background: #0000;
+	position: absolute;
+	z-index: 100;
+	left: 4px;
+    outline: none;
+    border: none;
+    color: #a9aeb2;
+	width: 100%;
+	height: 100%;
+}
+
+
+.cke_panel_block .panel-bottom-bar .input-wrapper .tooltip {
+	display: none;
+	position: absolute;
+	top: 0;
+    transform: translateY(-100%);
+    padding: 8px;
+	color: #fff;
+	border-radius: 4px;
+	background: black;
+	font-size: 12px;
+	width: 120px;
+    line-height: 18px;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper .tooltip .arrow {
+	position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+	left: 50%;
+    margin-left: -7px;
+    bottom: -6px;
+	border-color: #0000;
+	border-width: 7px 7px 0;
+	border-top-color: black;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper .unit {
+	position: absolute;
+    left: 34px;
+	color: #636972;
+}
+
+.cke_panel_block .panel-bottom-bar .control-wrapper {
+	width: 40%;
+    height: 100%;
+	display: flex;
+	color: #a9aeb2;
+	font-size: 14px;
+    text-transform: capitalize;
+}
+
+.cke_panel_block .panel-bottom-bar .control-wrapper .save-btn {
+	display: none;
+	width: 100%;
+    height: 100%;
+	text-align: center;
+    line-height: 33px;
+	background: #5c6676;
+	color: #fff;
+	cursor: pointer;
+}
+
+.cke_panel_block .panel-bottom-bar .control-wrapper .reset-btn {
+	width: 100%;
+    height: 100%;
+	text-align: center;
+    line-height: 33px;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.cke_panel_block input[type=number]::-webkit-inner-spin-button,
+.cke_panel_block input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.cke_panel_block input[type=number] {
+	-moz-appearance:textfield;
 }
 
 /* The IFRAME the panel is wrapped into. */
@@ -88,7 +195,7 @@ panel contents and color panels check menu.css and colorpanel.css.
 /* The HTML document which is a direct descendant of the IFRAME */
 .cke_panel_container
 {
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 	background-color: #333;
 }

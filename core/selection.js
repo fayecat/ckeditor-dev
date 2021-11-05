@@ -1735,7 +1735,7 @@
 				this.selectRanges( ranges );
 				this.lock();
 				// Return to the previously focused element.
-				focused && !focused.equals( this.root ) && focused.focus();
+				// focused && !focused.equals( this.root ) && focused.focus();
 				return;
 			}
 
