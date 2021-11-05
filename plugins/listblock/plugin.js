@@ -22,7 +22,7 @@ CKEDITOR.plugins.add( 'listblock', {
 			escapeSingleQuotes = function( str ) {
 				return str.replace( reSingleQuote, '\\\'' );
 			};
-		var fontSizeSetBar = CKEDITOR.addTemplate('panel-bottom-bar', '<div class="panel-bottom-bar"><div class="input-wrapper" title=""><div class="tooltip"><div class="arrow"></div>{title}</div><input type="text" value="{value}" onfocus="CKEDITOR.tools.callFunction({onfocusEvent}, event)" onblur="CKEDITOR.tools.callFunction({onblurEvent}, event)" maxLength="3" /><div class="unit">px</div></div><div class="control-wrapper" title=""> <div class="save-btn" onclick="CKEDITOR.tools.callFunction({onSaveFont}, event)">{saveText}</div> <div class="reset-btn" onclick="CKEDITOR.tools.callFunction({onResetFont}, event)">{resetText}</div></div></div>' )
+		var fontSizeSetBar = CKEDITOR.addTemplate('panel-bottom-bar', '<div class="panel-bottom-bar"><div class="input-wrapper {lightClass}" title=""><div class="tooltip"><div class="arrow"></div>{title}</div><input type="text" value="{value}" onfocus="CKEDITOR.tools.callFunction({onfocusEvent}, event)" onblur="CKEDITOR.tools.callFunction({onblurEvent}, event)" maxLength="3" /><div class="unit">px</div></div><div class="control-wrapper" title=""> <div class="save-btn" onclick="CKEDITOR.tools.callFunction({onSaveFont}, event)">{saveText}</div> <div class="reset-btn" onclick="CKEDITOR.tools.callFunction({onResetFont}, event)">{resetText}</div></div></div>' )
 		CKEDITOR.ui.panel.prototype.addListBlock = function( name, definition ) {
 			return this.addBlock( name, new CKEDITOR.ui.listBlock( this.getHolderElement(), definition ) );
 		};
@@ -137,7 +137,8 @@ CKEDITOR.plugins.add( 'listblock', {
 						onblurEvent: inputUnFocus,
 						onResetFont: onResetFont,
 						onSaveFont: onSaveFont,
-						value: params.value
+						value: params.value,
+						lightClass: params.lightClass,
 					}
 					this._.barParams = data;
 				},

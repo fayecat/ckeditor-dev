@@ -85,10 +85,12 @@ CKEDITOR.plugins.add( 'format', {
 					inputNode.focus();
 					var value = inputNode.val()
 
-					value = Number(value)
-					if (value === 'NaN') {
+					var currentNode = editor.elementPath().block.$
 
-						value = editor.config.getTextFontSize()
+					value = Number(value)
+					if (Number.isNaN(value)) {
+						value = currentNode.style.fontSize.replace('px', '')   || editor.config.getTextFontSize()
+						value = Number(value)
 					} else {
 						if (value > 120) {
 							value = 120
@@ -96,22 +98,28 @@ CKEDITOR.plugins.add( 'format', {
 							value = 6
 						}
 					}
+
+					value = parseInt(value)
 					inputNode.val(value)
 					editor.fire( 'saveSnapshot' );
 
-					var currentNode = editor.elementPath().block.$
+					parent.find('.input-wrapper').addClass('highlight')
 
 					var tagName = currentNode.localName
-					// var className = currentNode.className
+					var className = currentNode.className
 					// var fontSize = currentNode.style.fontSize
 					// var textAlign = currentNode.style.textAlign
 
 					var styleString = ''
 
-					var styleObj = { attributes: {} }
+					var styleObj = { attributes: { } }
 
 					if (tagName) {
 						styleObj.element = tagName
+					}
+
+					if (className) {
+						styleObj.attributes['class'] = ''
 					}
 
 
@@ -130,16 +138,18 @@ CKEDITOR.plugins.add( 'format', {
 					setTimeout( function() {
 						editor.fire( 'saveSnapshot' );
 					}, 0 );
-					resetEvent()
-					setTimeout(function() {
-						parent.find('.save-btn').show()
-						parent.find('.reset-btn').hide()
-					}, 300)
+					resetEvent();
+					inputNode.blur();
+					// setTimeout(function() {
+					// 	parent.find('.save-btn').show()
+					// 	parent.find('.reset-btn').hide()
+					// }, 300)
 				}
 
-				var resetFont = function() {
+				var resetFont = function(ev) {
 					editor.fire( 'saveSnapshot' );
-
+					var parent = $(ev.target).parents('.panel-bottom-bar')
+					var inputNode = parent.find('input')
 					var currentNode = editor.elementPath().block.$
 
 					var tagName = currentNode.localName
@@ -163,6 +173,8 @@ CKEDITOR.plugins.add( 'format', {
 
 					if (fontSize) {
 						styleString += ('font-size:' + fontSize + ';')
+						var value = editor.config.getTextFontSize()
+						inputNode.val(value)
 					}
 
 
@@ -173,6 +185,8 @@ CKEDITOR.plugins.add( 'format', {
 
 					var style = new CKEDITOR.style(styleObj)
 					editor.removeStyle(style)
+
+					parent.find('.input-wrapper').removeClass('highlight')
 					setTimeout( function() {
 						editor.fire( 'saveSnapshot' );
 					}, 0 );
@@ -180,16 +194,28 @@ CKEDITOR.plugins.add( 'format', {
 				}
 
 				var phrases = editor.config.getFontInputPhase() || {}
+				var currentNode = editor.elementPath().block.$
+
+				var currentStyle = currentNode.style
+
+				var currentFontSize = currentStyle.fontSize || ''
+
+				var lightClass = ''
+
+				if (currentFontSize && !currentNode.className) {
+					lightClass = 'highlight'
+				}
 
 				var data = {
-					value: editor.config.getTextFontSize(),
+					value: currentFontSize.replace('px', '') || editor.config.getTextFontSize(),
 					title: phrases.inputTooltip,
 					saveText: phrases.save,
 					resetText: phrases.reset,
 					onfocusEvent: onfocusEvent,
 					onblurEvent: onblurEvent,
 					onSaveFont: saveFont,
-					onResetFont: resetFont
+					onResetFont: resetFont,
+					lightClass: lightClass,
 				 }
 
 				this.initPixelSize(data)
@@ -245,6 +271,7 @@ CKEDITOR.plugins.add( 'format', {
 				}
 
 				// Save the undo snapshot after all changes are affected. (#4899)
+				parent.find('.input-wrapper').removeClass('highlight')
 				setTimeout( function() {
 					editor.fire( 'saveSnapshot' );
 				}, 0 );

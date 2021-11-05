@@ -93,6 +93,14 @@ panel contents and color panels check menu.css and colorpanel.css.
 	background: #3A3C3F;
 }
 
+.cke_panel_block .panel-bottom-bar .input-wrapper input:focus {
+	text-decoration: underline;
+}
+
+.cke_panel_block .panel-bottom-bar .input-wrapper.highlight {
+	background: #3A3C3F;
+}
+
 .cke_panel_block .panel-bottom-bar .input-wrapper:hover .tooltip {
 	display: block;
 }
@@ -243,6 +251,7 @@ is its visual representation:
 {
 	margin: 0;
     padding-bottom: 1px;
+	height: 27px;
 }
 
 /* The child of .cke_panel_listItem. These elements contain spans which are
