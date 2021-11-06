@@ -1735,6 +1735,8 @@
 				this.selectRanges( ranges );
 				this.lock();
 				// Return to the previously focused element.
+
+				// Reason for Removing the following code: we need to keep the editor dialog open when we click on the list items.
 				// focused && !focused.equals( this.root ) && focused.focus();
 				return;
 			}
