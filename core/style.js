@@ -1807,7 +1807,7 @@ CKEDITOR.STYLE_OBJECT = 3;
 		return true;
 	}
 
-	function applyStyleOnSelection( selection, remove, editor ) {
+	function applyStyleOnSelection( selection, remove, editor, isBlockBlur ) {
 		var doc = selection.document,
 			ranges = selection.getRanges(),
 			func = remove ? this.removeFromRange : this.applyToRange,

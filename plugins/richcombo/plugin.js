@@ -290,12 +290,13 @@ CKEDITOR.plugins.add( 'richcombo', {
 					panel.hide( 1 );
 				};
 
-				list.onClick = function( value, marked ) {
+				list.onClick = function( value, marked, isBlockBlur, event ) {
 
 					if ( me.onClick )
-						me.onClick.call( me, value, marked );
-
-					panel.hide();
+						me.onClick.call( me, value, marked, event );
+					if (!isBlockBlur) {
+						panel.hide();
+					}
 				};
 
 				this._.panel = panel;
@@ -353,6 +354,10 @@ CKEDITOR.plugins.add( 'richcombo', {
 			add: function( value, html, text ) {
 				this._.items[ value ] = text || value;
 				this._.list.add( value, html, text );
+			},
+
+			initPixelSize: function( params ) {
+				this._.list.initPixelSize(params)
 			},
 
 			startGroup: function( title ) {
