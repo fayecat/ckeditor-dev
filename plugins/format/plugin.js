@@ -112,11 +112,7 @@ CKEDITOR.plugins.add( 'format', {
 
 					var styleString = ''
 
-					var styleObj = { attributes: { } }
-
-					if (tagName) {
-						styleObj.element = tagName
-					}
+					var styleObj = { element: "p", attributes: { } }
 
 					if (className) {
 						styleObj.attributes['class'] = ''
@@ -206,8 +202,16 @@ CKEDITOR.plugins.add( 'format', {
 					lightClass = 'highlight'
 				}
 
+				currentFontSize = currentFontSize.replace('px', '')
+
+				var percentageValue = currentFontSize.split('%')
+
+				if (percentageValue.length > 1) {
+					currentFontSize = parseInt(Number(percentageValue[0]) / 100 * editor.config.getTextFontSize())
+				}
+
 				var data = {
-					value: currentFontSize.replace('px', '') || editor.config.getTextFontSize(),
+					value: currentFontSize || editor.config.getTextFontSize(),
 					title: phrases.inputTooltip,
 					saveText: phrases.save,
 					resetText: phrases.reset,
